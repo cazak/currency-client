@@ -16,22 +16,22 @@ final class DateValidatorTest extends TestCase
     {
         $validator = new DateValidator();
 
-        $this->assertTrue($validator->checkDate('2022-01-01'));
-        $this->assertTrue($validator->checkDate('latest'));
-        $this->assertTrue($validator->checkDate());
+        self::assertTrue($validator->checkDate('2022-01-01'));
+        self::assertTrue($validator->checkDate('latest'));
+        self::assertTrue($validator->checkDate());
     }
 
     public function test_incorrect(): void
     {
         $validator = new DateValidator();
 
-        $this->assertFalse($validator->checkDate('error-date'));
+        self::assertFalse($validator->checkDate('error-date'));
     }
 
     public function test_incorrect_date(): void
     {
         $validator = new DateValidator();
 
-        $this->assertFalse($validator->checkDate('2022-14-14'));
+        self::assertFalse($validator->checkDate('2022-14-14'));
     }
 }

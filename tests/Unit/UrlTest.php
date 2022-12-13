@@ -36,8 +36,8 @@ final class UrlTest extends TestCase
         $expectUrl = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/';
         $urlWithDate = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2022-13-12/';
 
-        self::assertEquals($expectUrl, $url->getDefaultUrl());
-        self::assertEquals($urlWithDate, $url->getDefaultUrl('2022-13-12'));
+        self::assertEquals($expectUrl, $url->getDefaultUrlWithDate());
+        self::assertEquals($urlWithDate, $url->getDefaultUrlWithDate('2022-13-12'));
     }
 
     public function test_default_endpoint_error(): void
@@ -46,7 +46,7 @@ final class UrlTest extends TestCase
         $errorUrl = 'error';
         $errorUrlWithDate = '2022-13-12';
 
-        self::assertNotEquals($errorUrl, $url->getDefaultUrl());
-        self::assertNotEquals($errorUrlWithDate, $url->getDefaultUrl($errorUrlWithDate));
+        self::assertNotEquals($errorUrl, $url->getDefaultUrlWithDate());
+        self::assertNotEquals($errorUrlWithDate, $url->getDefaultUrlWithDate($errorUrlWithDate));
     }
 }

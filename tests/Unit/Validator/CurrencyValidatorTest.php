@@ -15,13 +15,13 @@ final class CurrencyValidatorTest extends TestCase
     public function test_success(): void
     {
         $validator = new CurrencyValidator();
-        $this->assertTrue($validator->checkCurrency('rub'));
+        self::assertTrue($validator->checkCurrency('rub'));
     }
 
     public function test_incorrect(): void
     {
         $validator = new CurrencyValidator();
 
-        $this->assertFalse($validator->checkCurrency('error-currency'));
+        self::assertFalse($validator->checkCurrency('error-currency'));
     }
 }

@@ -17,7 +17,7 @@ final readonly class Url
         return self::ENDPOINT.$this->version.'/';
     }
 
-    public function getDefaultUrl(?string $date = null): string
+    public function getDefaultUrlWithDate(?string $date = null): string
     {
         return $this->getEndpoint().$this->getDateParameter($date);
     }

@@ -26,9 +26,9 @@ final readonly class Client
     ) {
     }
 
-    public function currencies(): array
+    public function currencies(?string $date = null): array
     {
-        $request = $this->requestFactory->createRequest('GET', $this->url->getDefaultUrl() . 'currencies'.self::END_STRING);
+        $request = $this->requestFactory->createRequest('GET', $this->url->getDefaultUrlWithDate($date).'currencies'.self::END_STRING);
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
     }
@@ -47,7 +47,7 @@ final readonly class Client
 
         $request = $this->requestFactory->createRequest(
             'GET',
-            $this->url->getDefaultUrl($date).'currencies/'.$baseCurrency.'/'.$currency.self::END_STRING
+            $this->url->getDefaultUrlWithDate($date).'currencies/'.$baseCurrency.'/'.$currency.self::END_STRING
         );
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
@@ -64,7 +64,7 @@ final readonly class Client
 
         $request = $this->requestFactory->createRequest(
             'GET',
-            $this->url->getDefaultUrl($date).'currencies/'.$baseCurrency.self::END_STRING
+            $this->url->getDefaultUrlWithDate($date).'currencies/'.$baseCurrency.self::END_STRING
         );
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
