@@ -14,16 +14,16 @@ final readonly class Url
 
     public function getEndpoint(): string
     {
-        return self::ENDPOINT . $this->version . '/';
+        return self::ENDPOINT.$this->version.'/';
     }
 
     public function getDefaultUrl(?string $date = null): string
     {
-        return $this->getEndpoint() . $this->getDateParameter($date);
+        return $this->getEndpoint().$this->getDateParameter($date);
     }
 
     private function getDateParameter(?string $date = null): string
     {
-        return $date ? $date . '/' : 'latest/';
+        return $date ? $date.'/' : 'latest/';
     }
 }

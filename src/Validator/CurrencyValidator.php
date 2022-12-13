@@ -281,10 +281,12 @@ final class CurrencyValidator
         'zwl',
     ];
 
-    public function checkCurrency(string $currency): void
+    public function checkCurrency(string $currency): bool
     {
-       if (!in_array($currency, $this->currencies)) {
-           throw new \InvalidArgumentException('Incorrect currency');
-       }
+        if (!in_array($currency, $this->currencies, true)) {
+            return false;
+        }
+
+        return true;
     }
 }

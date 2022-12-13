@@ -34,7 +34,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "fixcs": "php-cs-fixer fix -v",
+        "fixcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --allow-risky=yes -v",
         "rector-check": "vendor/bin/rector process src --dry-run",
         "rector-fix": "vendor/bin/rector process src"
     }
