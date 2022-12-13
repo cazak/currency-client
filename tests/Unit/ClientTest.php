@@ -75,6 +75,32 @@ final class ClientTest extends TestCase
         self::assertEquals($array, $this->storage->getItems());
     }
 
+    public function test_get_rate_by_currency_error_date(): void
+    {
+        $array = [
+            'date' => '2022-12-13',
+            'jpy' => 143.788552,
+        ];
+
+        $this->appendQueue($array);
+
+        $this->expectExceptionMessage('Incorrect date format');
+        $this->client->getRateByCurrency('eur', 'jpy', 'error-date');
+    }
+
+    public function test_get_rate_by_currency_error_currency(): void
+    {
+        $array = [
+            'date' => '2022-12-13',
+            'jpy' => 143.788552,
+        ];
+
+        $this->appendQueue($array);
+
+        $this->expectExceptionMessage('Incorrect currency');
+        $this->client->getRateByCurrency('eur', 'jpyy', '2022-12-13');
+    }
+
     public function test_get_rates_by_base_currency_success(): void
     {
         $array = [
