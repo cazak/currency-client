@@ -32,5 +32,5 @@ $data = $currencyClient->getRatesByBaseCurrency('eur');
 ## Тесты
 
 ```bash
-$ vendor/bin/phpunit
+$ ./vendor/bin/phpunit
 ```

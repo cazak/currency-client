@@ -39,10 +39,10 @@ final class ClientTest extends TestCase
     public function test_currencies_success(): void
     {
         $array = [
-            '1inch' => 123,
-            'aave' => 123,
-            'eur' => 123,
-            'rub' => 123,
+            '1inch' => '1inch Network',
+            'aave' => 'Aave',
+            'eur' => 'Euro',
+            'rub' => 'Russian ruble',
         ];
         $this->appendQueue($array);
 

@@ -28,7 +28,7 @@ final readonly class Client
 
     public function currencies(): array
     {
-        $request = $this->requestFactory->createRequest('GET', $this->url->getEndpoint().'currencies'.self::END_STRING);
+        $request = $this->requestFactory->createRequest('GET', $this->url->getDefaultUrl() . 'currencies'.self::END_STRING);
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
     }
