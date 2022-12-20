@@ -22,14 +22,6 @@ final class UrlTest extends TestCase
         self::assertEquals($expectUrl, $url->getEndpoint());
     }
 
-    public function test_endpoint_error(): void
-    {
-        $url = new Url(self::VERSION);
-        $errorUrl = 'error';
-
-        self::assertNotEquals($errorUrl, $url->getEndpoint());
-    }
-
     public function test_default_url_success(): void
     {
         $url = new Url(self::VERSION);
@@ -38,15 +30,5 @@ final class UrlTest extends TestCase
 
         self::assertEquals($expectUrl, $url->getDefaultUrlWithDate());
         self::assertEquals($urlWithDate, $url->getDefaultUrlWithDate('2022-13-12'));
-    }
-
-    public function test_default_endpoint_error(): void
-    {
-        $url = new Url(self::VERSION);
-        $errorUrl = 'error';
-        $errorUrlWithDate = '2022-13-12';
-
-        self::assertNotEquals($errorUrl, $url->getDefaultUrlWithDate());
-        self::assertNotEquals($errorUrlWithDate, $url->getDefaultUrlWithDate($errorUrlWithDate));
     }
 }

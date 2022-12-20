@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace Cazak\CurrencyClient\Tests\Support;
 
+use Cazak\CurrencyClient\Model\Model;
 use Cazak\CurrencyClient\Storage\Storage;
 
 final class DummyStorage implements Storage
 {
-    private array $items;
+    private Model $model;
 
-    public function save(array $items): void
+    public function save(Model $model): void
     {
-        $this->items = $items;
+        $this->model = $model;
     }
 
-    public function getItems(): array
+    public function getModel(): Model
     {
-        return $this->items;
+        return $this->model;
     }
 }

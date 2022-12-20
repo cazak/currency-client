@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 namespace Cazak\CurrencyClient;
 
+use Cazak\CurrencyClient\ValueObject\Currency;
+use Cazak\CurrencyClient\ValueObject\Date;
+
 final readonly class Url
 {
-    private const ENDPOINT = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@';
+    private const ENDPOINT = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/';
 
-    public function __construct(private readonly int $version)
+    public function getEndpoint(Date $date, ?Currency $currency = null, ?Currency $secondCurrency = null): string
     {
+        return self::ENDPOINT .
+            $date->getDate() .
+            '/currencies' .
+            $this->getCurrenciesParameter($currency, $secondCurrency) .
+            '.json';
     }
 
-    public function getEndpoint(): string
+    private function getCurrenciesParameter(?Currency $currency = null, ?Currency $secondCurrency = null): string
     {
-        return self::ENDPOINT.$this->version.'/';
-    }
+        $string = '';
+        if ($currency) {
+            $string .= '/' . $currency->getCurrency();
+        }
 
-    public function getDefaultUrlWithDate(?string $date = null): string
-    {
-        return $this->getEndpoint().$this->getDateParameter($date);
-    }
+        if ($secondCurrency) {
+            $string .= '/' . $secondCurrency->getCurrency();
+        }
 
-    private function getDateParameter(?string $date = null): string
-    {
-        return $date ? $date.'/' : 'latest/';
+        return $string;
     }
 }

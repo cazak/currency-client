@@ -2,7 +2,9 @@
 
 namespace Cazak\CurrencyClient\Storage;
 
+use Cazak\CurrencyClient\Model\Model;
+
 interface Storage
 {
-    public function save(array $items): void;
+    public function save(Model $model): void;
 }

@@ -29,7 +29,7 @@ final class ClientTest extends TestCase
         $this->mock = new MockHandler();
         $this->client = new ApiClient(
             new Client(['handler' => new HandlerStack($this->mock)]),
-            $this->storage,
+//            $this->storage,
             new \GuzzleHttp\Psr7\HttpFactory(),
         );
     }
