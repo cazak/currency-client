@@ -13,13 +13,15 @@ $ composer require cazak/currency-client
 
 ```php
 use Cazak\CurrencyClient;
-use Cazak\ValueObject\Currency;
-use Cazak\ValueObject\Date;
+use Cazak\CurrencyClient\Request;
+use Cazak\CurrencyClient\ResponseMapper;
+use Cazak\CurrencyClient\Storage\FileStorage;
+use Cazak\CurrencyClient\ValueObject\Currency;
+use Cazak\CurrencyClient\ValueObject\Date;
 
 $currencyClient = new CurrencyClient\Client(
-    new \GuzzleHttp\Client(),
-    new CurrencyClient\Storage\FileStorage(),
-    new \GuzzleHttp\Psr7\HttpFactory(),
+    response: new Request(storage: new FileStorage(), client: new \GuzzleHttp\Client(), mapper: new ResponseMapper()),
+    requestFactory: new \GuzzleHttp\Psr7\HttpFactory(),
 );
 
 // Данные за определённую дату
