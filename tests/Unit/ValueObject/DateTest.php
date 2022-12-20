@@ -16,7 +16,7 @@ final class DateTest extends TestCase
     {
         self::assertEquals('2022-01-01', (new Date('2022-01-01'))->getDate());
         self::assertEquals('latest', (new Date('latest'))->getDate());
-        self::assertNull((new Date())->getDate());
+        self::assertEquals('latest', (new Date())->getDate());
     }
 
     public function test_incorrect(): void

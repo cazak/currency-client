@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cazak\CurrencyClient;
 
-use Cazak\CurrencyClient\Model;
 use Cazak\CurrencyClient\Model\Model as ModelInterface;
 use Cazak\CurrencyClient\ValueObject\Currency;
 use Cazak\CurrencyClient\ValueObject\Date;
@@ -16,7 +15,7 @@ final readonly class Client
 
     public function __construct(
         private RequestFactoryInterface $requestFactory,
-        private Response $response,
+        private Request $response,
     ) {
         $this->url = new Url();
     }

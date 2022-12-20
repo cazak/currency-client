@@ -10,12 +10,12 @@ use Cazak\CurrencyClient\Storage\Storage;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 
-final class Response
+final class Request
 {
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly ResponseMapper $mapper = new ResponseMapper(),
         private readonly Storage $storage = new FileStorage(),
+        private readonly ResponseMapper $mapper = new ResponseMapper(),
         private bool $needSave = true,
     ) {
     }

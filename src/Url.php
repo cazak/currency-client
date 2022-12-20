@@ -11,7 +11,7 @@ final readonly class Url
 {
     private const ENDPOINT = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/';
 
-    public function getEndpoint(Date $date, ?Currency $currency = null, ?Currency $secondCurrency = null): string
+    public function getEndpoint(Date $date = new Date(), ?Currency $currency = null, ?Currency $secondCurrency = null): string
     {
         return self::ENDPOINT .
             $date->getDate() .

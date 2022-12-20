@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Cazak\CurrencyClient\Tests\Unit;
 
 use Cazak\CurrencyClient\Client as ApiClient;
+use Cazak\CurrencyClient\Model\Model;
+use Cazak\CurrencyClient\Model\RateByCurrency;
+use Cazak\CurrencyClient\Model\RatesByCurrency;
+use Cazak\CurrencyClient\Request;
 use Cazak\CurrencyClient\Tests\Support\DummyStorage;
 use Cazak\CurrencyClient\ValueObject\Currency;
 use Cazak\CurrencyClient\ValueObject\Date;
@@ -28,10 +32,30 @@ final class ClientTest extends TestCase
         $this->storage = new DummyStorage();
         $this->mock = new MockHandler();
         $this->client = new ApiClient(
-            new Client(['handler' => new HandlerStack($this->mock)]),
-//            $this->storage,
             new \GuzzleHttp\Psr7\HttpFactory(),
+            new Request(
+                new Client(['handler' => new HandlerStack($this->mock)]),
+                $this->storage,
+            ),
         );
+    }
+
+    public function test_success_without_data_saving(): void
+    {
+        $array = [
+            '1inch' => '1inch Network',
+            'aave' => 'Aave',
+            'eur' => 'Euro',
+            'rub' => 'Russian ruble',
+        ];
+        $this->appendQueue($array);
+
+        $this->client->disableSave();
+
+        $this->client->currencies();
+
+        self::assertNotInstanceOf(Model::class, $this->storage->getModel());
+        self::assertNull($this->storage->getModel());
     }
 
     public function test_currencies_success(): void
@@ -46,31 +70,58 @@ final class ClientTest extends TestCase
 
         $data = $this->client->currencies();
 
-        self::assertIsArray($data);
-        self::assertArrayHasKey('1inch', $data);
-        self::assertArrayHasKey('aave', $data);
-        self::assertArrayHasKey('eur', $data);
-        self::assertArrayHasKey('rub', $data);
+        self::assertIsArray($data->getRawData());
+        self::assertArrayHasKey('1inch', $data->getRawData());
+        self::assertArrayHasKey('aave', $data->getRawData());
+        self::assertArrayHasKey('eur', $data->getRawData());
+        self::assertArrayHasKey('rub', $data->getRawData());
 
-        self::assertEquals($array, $this->storage->getItems());
+        self::assertEquals($array, $this->storage->getModel()->getRawData());
+    }
+
+    public function test_get_rates_by_base_currency_success(): void
+    {
+        $array = [
+            'date' => '2022-12-13',
+            'eur' => $rates = [
+                '1inch' => 2.438527,
+                'aave' => 0.017691,
+                'ada' => 3.42364,
+                'aed' => 3.860913,
+            ],
+        ];
+
+        $this->appendQueue($array);
+
+        $data = $this->client->getRatesByBaseCurrency(new Currency('eur'), new Date('2022-12-13'));
+
+        self::assertIsArray($data->getRawData());
+        self::assertInstanceOf(RatesByCurrency::class, $data);
+        self::assertEquals('2022-12-13', $data->getDate());
+        self::assertEquals('eur', $data->getCurrency());
+        self::assertEquals($rates, $data->getCurrencyRates());
+
+        self::assertEquals($array, $this->storage->getModel()->getRawData());
     }
 
     public function test_get_rate_by_currency_success(): void
     {
         $array = [
             'date' => '2022-12-13',
-            'jpy' => 143.788552,
+            'jpy' => 143.78,
         ];
 
         $this->appendQueue($array);
 
         $data = $this->client->getRateByCurrency(new Currency('eur'), new Currency('jpy'), new Date('2022-12-13'));
 
-        self::assertIsArray($data);
-        self::assertEquals('2022-12-13', $data['date']);
-        self::assertEquals(143.788552, $data['jpy']);
+        self::assertIsArray($data->getRawData());
+        self::assertInstanceOf(RateByCurrency::class, $data);
+        self::assertEquals('2022-12-13', $data->getDate());
+        self::assertEquals('jpy', $data->getCurrency());
+        self::assertEquals(143.78, $data->getPrice());
 
-        self::assertEquals($array, $this->storage->getItems());
+        self::assertEquals($array, $this->storage->getModel()->getRawData());
     }
 
     public function test_get_rate_by_currency_error_date(): void
@@ -97,32 +148,6 @@ final class ClientTest extends TestCase
 
         self::expectExceptionMessage('Incorrect currency');
         $this->client->getRateByCurrency(new Currency('eur'), new Currency('jpyy'), new Date('2022-12-13'));
-    }
-
-    public function test_get_rates_by_base_currency_success(): void
-    {
-        $array = [
-            'date' => '2022-12-13',
-            'eur' => [
-                '1inch' => 2.438527,
-                'aave' => 0.017691,
-                'ada' => 3.42364,
-                'aed' => 3.860913,
-            ],
-        ];
-
-        $this->appendQueue($array);
-
-        $data = $this->client->getRatesByBaseCurrency(new Currency('eur'), new Date('2022-12-13'));
-
-        self::assertIsArray($data);
-        self::assertEquals('2022-12-13', $data['date']);
-        self::assertEquals(2.438527, $data['eur']['1inch']);
-        self::assertEquals(0.017691, $data['eur']['aave']);
-        self::assertEquals(3.42364, $data['eur']['ada']);
-        self::assertEquals(3.860913, $data['eur']['aed']);
-
-        self::assertEquals($array, $this->storage->getItems());
     }
 
     private function appendQueue(array $data): void

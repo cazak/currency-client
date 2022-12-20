@@ -9,14 +9,14 @@ use Cazak\CurrencyClient\Storage\Storage;
 
 final class DummyStorage implements Storage
 {
-    private Model $model;
+    private ?Model $model = null;
 
     public function save(Model $model): void
     {
         $this->model = $model;
     }
 
-    public function getModel(): Model
+    public function getModel(): ?Model
     {
         return $this->model;
     }
