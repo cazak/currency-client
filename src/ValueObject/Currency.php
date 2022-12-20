@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Cazak\CurrencyClient\Validator;
+namespace Cazak\CurrencyClient\ValueObject;
+use InvalidArgumentException;
 
-final class CurrencyValidator
+final class Currency
 {
     private array $currencies = [
         '1inch',
@@ -281,12 +282,15 @@ final class CurrencyValidator
         'zwl',
     ];
 
-    public function checkCurrency(string $currency): bool
+    public function __construct(private readonly string $currency)
     {
         if (!in_array($currency, $this->currencies, true)) {
-            return false;
+            throw new InvalidArgumentException('Incorrect currency');
         }
+    }
 
-        return true;
+    public function getCurrency(): string
+    {
+        return $this->currency;
     }
 }

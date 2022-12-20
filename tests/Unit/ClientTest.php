@@ -6,8 +6,8 @@ namespace Cazak\CurrencyClient\Tests\Unit;
 
 use Cazak\CurrencyClient\Client as ApiClient;
 use Cazak\CurrencyClient\Tests\Support\DummyStorage;
-use Cazak\CurrencyClient\Validator\CurrencyValidator;
-use Cazak\CurrencyClient\Validator\DateValidator;
+use Cazak\CurrencyClient\ValueObject\Currency;
+use Cazak\CurrencyClient\ValueObject\Date;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -31,8 +31,6 @@ final class ClientTest extends TestCase
             new Client(['handler' => new HandlerStack($this->mock)]),
             $this->storage,
             new \GuzzleHttp\Psr7\HttpFactory(),
-            new DateValidator(),
-            new CurrencyValidator(),
         );
     }
 
@@ -66,7 +64,7 @@ final class ClientTest extends TestCase
 
         $this->appendQueue($array);
 
-        $data = $this->client->getRateByCurrency('eur', 'jpy', '2022-12-13');
+        $data = $this->client->getRateByCurrency(new Currency('eur'), new Currency('jpy'), new Date('2022-12-13'));
 
         self::assertIsArray($data);
         self::assertEquals('2022-12-13', $data['date']);
@@ -84,8 +82,8 @@ final class ClientTest extends TestCase
 
         $this->appendQueue($array);
 
-        $this->expectExceptionMessage('Incorrect date format');
-        $this->client->getRateByCurrency('eur', 'jpy', 'error-date');
+        $this->expectExceptionMessage('Incorrect date');
+        $this->client->getRateByCurrency(new Currency('eur'), new Currency('jpy'), new Date('error-date'));
     }
 
     public function test_get_rate_by_currency_error_currency(): void
@@ -97,8 +95,8 @@ final class ClientTest extends TestCase
 
         $this->appendQueue($array);
 
-        $this->expectExceptionMessage('Incorrect currency');
-        $this->client->getRateByCurrency('eur', 'jpyy', '2022-12-13');
+        self::expectExceptionMessage('Incorrect currency');
+        $this->client->getRateByCurrency(new Currency('eur'), new Currency('jpyy'), new Date('2022-12-13'));
     }
 
     public function test_get_rates_by_base_currency_success(): void
@@ -115,7 +113,7 @@ final class ClientTest extends TestCase
 
         $this->appendQueue($array);
 
-        $data = $this->client->getRatesByBaseCurrency('eur', '2022-12-13');
+        $data = $this->client->getRatesByBaseCurrency(new Currency('eur'), new Date('2022-12-13'));
 
         self::assertIsArray($data);
         self::assertEquals('2022-12-13', $data['date']);

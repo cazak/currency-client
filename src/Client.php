@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Cazak\CurrencyClient;
 
 use Cazak\CurrencyClient\Storage\Storage;
-use Cazak\CurrencyClient\Validator\CurrencyValidator;
-use Cazak\CurrencyClient\Validator\DateValidator;
-use InvalidArgumentException;
+use Cazak\CurrencyClient\ValueObject\Currency;
+use Cazak\CurrencyClient\ValueObject\Date;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
@@ -20,51 +19,32 @@ final readonly class Client
         private ClientInterface $client,
         private Storage $storage,
         private RequestFactoryInterface $requestFactory,
-        private DateValidator $dateValidator,
-        private CurrencyValidator $currencyValidator,
         private Url $url = new Url(self::VERSION),
     ) {
     }
 
-    public function currencies(?string $date = null): array
+    public function currencies(Date $date = new Date()): array
     {
-        $request = $this->requestFactory->createRequest('GET', $this->url->getDefaultUrlWithDate($date).'currencies'.self::END_STRING);
+        $request = $this->requestFactory->createRequest('GET', $this->url->getDefaultUrlWithDate($date->getDate()).'currencies'.self::END_STRING);
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
     }
 
-    public function getRateByCurrency(string $baseCurrency, string $currency, ?string $date = null): array
+    public function getRateByCurrency(Currency $baseCurrency, Currency $currency, Date $date): array
     {
-        if (!$this->currencyValidator->checkCurrency($baseCurrency)) {
-            throw new InvalidArgumentException('Incorrect currency');
-        }
-        if (!$this->currencyValidator->checkCurrency($currency)) {
-            throw new InvalidArgumentException('Incorrect currency');
-        }
-        if (!$this->dateValidator->checkDate($date)) {
-            throw new InvalidArgumentException('Incorrect date format');
-        }
-
         $request = $this->requestFactory->createRequest(
             'GET',
-            $this->url->getDefaultUrlWithDate($date).'currencies/'.$baseCurrency.'/'.$currency.self::END_STRING
+            $this->url->getDefaultUrlWithDate($date->getDate()).'currencies/'.$baseCurrency->getCurrency().'/'.$currency->getCurrency().self::END_STRING
         );
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());
     }
 
-    public function getRatesByBaseCurrency(string $baseCurrency, ?string $date = null): array
+    public function getRatesByBaseCurrency(Currency $baseCurrency, Date $date): array
     {
-        if (!$this->currencyValidator->checkCurrency($baseCurrency)) {
-            throw new InvalidArgumentException('Incorrect currency');
-        }
-        if (!$this->dateValidator->checkDate($date)) {
-            throw new InvalidArgumentException('Incorrect date format');
-        }
-
         $request = $this->requestFactory->createRequest(
             'GET',
-            $this->url->getDefaultUrlWithDate($date).'currencies/'.$baseCurrency.self::END_STRING
+            $this->url->getDefaultUrlWithDate($date->getDate()).'currencies/'.$baseCurrency->getCurrency().self::END_STRING
         );
 
         return $this->saveDataAndReturnResponse($this->client->sendRequest($request)->getBody()->getContents());

@@ -13,20 +13,20 @@ $ composer require cazak/currency-client
 
 ```php
 use Cazak\CurrencyClient;
+use Cazak\ValueObject\Currency;
+use Cazak\ValueObject\Date;
 
 $currencyClient = new CurrencyClient\Client(
     new \GuzzleHttp\Client(),
     new CurrencyClient\Storage\FileStorage(),
     new \GuzzleHttp\Psr7\HttpFactory(),
-    new CurrencyClient\Validator\DateValidator(),
-    new CurrencyClient\Validator\CurrencyValidator(),
 );
 
 // Данные за определённую дату
-$data = $currencyClient->getRatesByBaseCurrency('eur', '2022-12-01');
+$data = $currencyClient->getRatesByBaseCurrency(new Currency('eur'), new Date('2022-12-01'));
 // Идентичный результат - данные за последний день
-$data = $currencyClient->getRatesByBaseCurrency('eur', 'latest');
-$data = $currencyClient->getRatesByBaseCurrency('eur');
+$data = $currencyClient->getRatesByBaseCurrency(new Currency('eur'), new Date('latest'));
+$data = $currencyClient->getRatesByBaseCurrency(new Currency('eur'));
 ```
 
 ## Тесты
