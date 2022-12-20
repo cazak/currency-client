@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cazak\CurrencyClient;
 
+use Cazak\CurrencyClient\Model\Model;
 use Cazak\CurrencyClient\Storage\FileStorage;
 use Cazak\CurrencyClient\Storage\Storage;
 use Psr\Http\Client\ClientInterface;
@@ -15,22 +16,22 @@ final class Response
         private readonly ClientInterface $client,
         private readonly ResponseMapper $mapper = new ResponseMapper(),
         private readonly Storage $storage = new FileStorage(),
-        private bool $needSafe = true,
+        private bool $needSave = true,
     ) {
     }
 
     public function disableSave(): void
     {
-        $this->needSafe = false;
+        $this->needSave = false;
     }
 
-    public function request(RequestInterface $request)
+    public function request(RequestInterface $request, string $class): Model
     {
         $response = $this->client->sendRequest($request);
 
-        $mappedResponse = $this->mapper->map($response);
+        $mappedResponse = $this->mapper->map($response, $class);
 
-        if ($this->needSafe) {
+        if ($this->needSave) {
             $this->storage->save($mappedResponse);
         }
 
